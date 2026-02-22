@@ -11,6 +11,28 @@ const loading = ref(false)
 const error = ref('')
 const message = ref('')
 
+async function handleForgotPassword() {
+  if (!email.value) {
+    error.value = 'Please enter your email address first.'
+    return
+  }
+  loading.value = true
+  error.value = ''
+  message.value = ''
+
+  try {
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email.value, {
+      redirectTo: `${import.meta.env.VITE_APP_URL || window.location.origin}/reset-password`,
+    })
+    if (err) throw err
+    message.value = 'Check your email for a password reset link.'
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+  }
+}
+
 async function handleSubmit() {
   loading.value = true
   error.value = ''
@@ -84,6 +106,16 @@ async function handleSubmit() {
               class="input-field"
               placeholder="At least 6 characters"
             />
+          </div>
+
+          <div v-if="!isSignUp" class="text-right -mt-1">
+            <button
+              type="button"
+              @click="handleForgotPassword"
+              class="text-xs text-ink-light hover:text-terracotta transition-colors"
+            >
+              Forgot password?
+            </button>
           </div>
 
           <div v-if="error" class="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">

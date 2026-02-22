@@ -9,6 +9,11 @@ const routes = [
     meta: { guest: true },
   },
   {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: () => import('../views/ResetPassword.vue'),
+  },
+  {
     path: '/',
     name: 'Recipes',
     component: () => import('../views/Recipes.vue'),
